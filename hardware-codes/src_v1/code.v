@@ -19,6 +19,8 @@
 `define FCC     7'b00011_11      // fencex
 `define CCC     7'b11100_11      // exx, csrxx
 
+`define CIM_BASE_ADDR 32'h08000000 // granularity: 1 byte
+
 // configuration file
 
 module darkriscv
@@ -249,7 +251,7 @@ module darkriscv
     // IO and memory interface
 
     assign DATAO = SDATA; // SCC ? SDATA : 0;
-    assign DADDR = U1REG + SIMM; // (SCC||LCC) ? U1REG + SIMM : 0;
+    assign DADDR = (U1REG + SIMM) >> 2; // note that ram's granularity is 4 bytes // (SCC||LCC) ? U1REG + SIMM : 0;
 
     // based in the Scc and Lcc   
     assign RD = LCC;

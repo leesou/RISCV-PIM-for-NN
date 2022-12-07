@@ -3,12 +3,12 @@
 module ram (
     input CLK,
     input [31:0] D,
-    output [31:0] Q,
+    output reg [31:0] Q,
     input [31:0] A,
     input WE
 );
 
-parameter LEN = 1024;
+parameter LEN = 33554432; // 2^25 * 4 bytes (128MB)
 
 reg [31:0] mem_core [0:LEN-1];
 
@@ -20,11 +20,12 @@ initial begin
     end
 end
 
-assign Q = mem_core[A]; //change the output into reg form, then there is no 1-cycle read latency
-
 always @(posedge CLK) begin
     if(WE) begin
         mem_core[A] <= D;
+    end
+    else begin
+        Q <= mem_core[A];
     end
 end
     
