@@ -6,14 +6,18 @@
 `define LUI     7'b01101_11      // lui   rd,imm[31:12]
 `define AUIPC   7'b00101_11      // auipc rd,imm[31:12]
 `define JAL     7'b11011_11      // jal   rd,imm[xxxxx]
-`define JALR    7'b11001_11      // jalr  rd,rs1,imm[11:0] 
+`define JALR    7'b11001_11      // jalr  rd,rs1,imm[11:0]
 `define BCC     7'b11000_11      // bcc   rs1,rs2,imm[12:1]
 `define LCC     7'b00000_11      // lxx   rd,rs1,imm[11:0]
 `define SCC     7'b01000_11      // sxx   rs1,rs2,imm[11:0]
 `define MCC     7'b00100_11      // xxxi  rd,rs1,imm[11:0]
-`define RCC     7'b01100_11      // xxx   rd,rs1,rs2 
+`define RCC     7'b01100_11      // xxx   rd,rs1,rs2
 `define MAC     7'b11111_11      // mac   rd,rs1,rs2
 
+/*
+mul rd, rs1, rs2; using opcode RCC, fct3==5, code in line 190
+ld rd, (rs1); already supported, using opcode LCC, fct3==2
+*/
 // not implemented opcodes:
 
 `define FCC     7'b00011_11      // fencex
@@ -30,7 +34,7 @@ module darkriscv
     input             CLK,   // clock
     input             RES,   // reset
     input             HLT,   // halt
-     
+    
 
     input      [31:0] IDATA, // instruction data bus
     output     [31:0] IADDR, // instruction addr bus
@@ -38,11 +42,11 @@ module darkriscv
     input      [31:0] DATAI, // data bus (input)
     output     [31:0] DATAO, // data bus (output)
     output     [31:0] DADDR, // addr bus
-   
+    
     output     [ 3:0] BE,   // byte enable
     output            WR,    // write enable
     output            RD,    // read enable 
-   
+    
 
     output            IDLE,   // idle output
     
@@ -184,7 +188,7 @@ module darkriscv
                          FCT3==2 ? S1REG<S2REGX?1:0 : // signed
                          FCT3==0 ? (XRCC&&FCT7[5] ? U1REG-U2REGX : U1REG+S2REGX) :
                          FCT3==1 ? U1REG<<U2REGX[4:0] :                         
-                         //FCT3==5 ? 
+                         FCT3==5 ? U1REG*S2REGX :     // mul supported
                          !FCT7[5] ? U1REG>>U2REGX[4:0] :
                         $signed(S1REG>>>U2REGX[4:0]);  // (FCT7[5] ? U1REG>>>U2REG[4:0] : 
                        
