@@ -19,9 +19,10 @@ void matmul(
             // Step1: Load weights to CIM memory
             for(int wh_in=0; wh_in<TILE_HEIGHT; wh_in+=1)
             {
+                int height = wh_out+wh_in;
                 for(int ww_in=0; ww_in<TILE_WIDTH/WEIGHT_GRANULARITY; ww_in+=1)
                 {
-                    int height = wh_out+wh_in;
+                    
                     int width = ww_out+ww_in;
                     // load weight value to CPU
                     unsigned weights = *(((unsigned*)weight_matrix) + height*weight_width/WEIGHT_GRANULARITY + width);
@@ -44,45 +45,49 @@ void matmul(
                     asm volatile( "nop" );
                 }
 
+                unsigned ps0, ps1, ps2, ps3, ps4, ps5, ps6, ps7 = 0;
                 // Load output partial sum
                 unsigned output0 = *((((int*)output_matrix) + wh_out*input_width + iw));
-                unsigned output1 = *((((int*)output_matrix) + (wh_out+1)*input_width + iw));
-                unsigned output2 = *((((int*)output_matrix) + (wh_out+2)*input_width + iw));
-                unsigned output3 = *((((int*)output_matrix) + (wh_out+3)*input_width + iw));
-                unsigned output4 = *((((int*)output_matrix) + (wh_out+4)*input_width + iw));
-                unsigned output5 = *((((int*)output_matrix) + (wh_out+5)*input_width + iw));
-                unsigned output6 = *((((int*)output_matrix) + (wh_out+6)*input_width + iw));
-                unsigned output7 = *((((int*)output_matrix) + (wh_out+7)*input_width + iw));
-
                 // Read out CIM results
-                unsigned ps0, ps1, ps2, ps3, ps4, ps5, ps6, ps7 = 0;
                 asm volatile( "nop" );
-                asm volatile( "nop" );
-                asm volatile( "nop" );
-                asm volatile( "nop" );
-                asm volatile( "nop" );
-                asm volatile( "nop" );
-                asm volatile( "nop" );
-                asm volatile( "nop" );
-
                 // add to previous results
                 output0 += ps0;
-                output1 += ps1;
-                output2 += ps2;
-                output3 += ps3;
-                output4 += ps4;
-                output5 += ps5;
-                output6 += ps6;
-                output7 += ps7;
-
                 // Write back outputs
                 *((((int*)output_matrix) + wh_out*input_width + iw)) = output0;
+
+                unsigned output1 = *((((int*)output_matrix) + (wh_out+1)*input_width + iw));
+                asm volatile( "nop" );
+                output1 += ps1;
                 *((((int*)output_matrix) + (wh_out+1)*input_width + iw)) = output1;
+                
+                unsigned output2 = *((((int*)output_matrix) + (wh_out+2)*input_width + iw));
+                asm volatile( "nop" );
+                output2 += ps2;
                 *((((int*)output_matrix) + (wh_out+2)*input_width + iw)) = output2;
+
+                unsigned output3 = *((((int*)output_matrix) + (wh_out+3)*input_width + iw));
+                asm volatile( "nop" );
+                output3 += ps3;
                 *((((int*)output_matrix) + (wh_out+3)*input_width + iw)) = output3;
+
+                unsigned output4 = *((((int*)output_matrix) + (wh_out+4)*input_width + iw));
+                asm volatile( "nop" );
+                output4 += ps4;
                 *((((int*)output_matrix) + (wh_out+4)*input_width + iw)) = output4;
+
+                unsigned output5 = *((((int*)output_matrix) + (wh_out+5)*input_width + iw));
+                asm volatile( "nop" );
+                output5 += ps5;
                 *((((int*)output_matrix) + (wh_out+5)*input_width + iw)) = output5;
+
+                unsigned output6 = *((((int*)output_matrix) + (wh_out+6)*input_width + iw));
+                asm volatile( "nop" );
+                output6 += ps6;
                 *((((int*)output_matrix) + (wh_out+6)*input_width + iw)) = output6;
+
+                unsigned output7 = *((((int*)output_matrix) + (wh_out+7)*input_width + iw));
+                asm volatile( "nop" );
+                output7 += ps7;
                 *((((int*)output_matrix) + (wh_out+7)*input_width + iw)) = output7;
 
             }
