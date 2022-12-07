@@ -243,7 +243,7 @@ module darkriscv
 
         NXPC <= XRES ? `__RESETPC__ : HLT ? NXPC :   // reset and halt
               JREQ ? JVAL :                   // jmp/bra
-                     NXPC+4;                   // normal flow
+                     NXPC+1;                   // normal flow
 
         PC   <= /*XRES ? `__RESETPC__ :*/ HLT ? PC : NXPC; // current program counter
     end
