@@ -3,10 +3,10 @@
 
 module TB_CIM;
 
-// initial begin            
-//     $dumpfile("wave.vcd");        //generate wave.vcd
-//     $dumpvars(0, TB_CIM);    //dump all of the TB module data
-// end
+initial begin            
+    $dumpfile("wave.vcd");        //generate wave.vcd
+    $dumpvars(0, TB_CIM);    //dump all of the TB module data
+end
 
 reg clk;
 initial clk = 0;

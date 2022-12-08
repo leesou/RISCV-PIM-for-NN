@@ -260,9 +260,5 @@ initial begin
 	cim_out7_tmp = 0;
 	$monitor("mem[0]=%8d, mem[1]=%8d, mem[2]=%8d, mem[3]=%8d", mem[0], mem[1], mem[2], mem[3]);
 end
-initial begin            
-    $dumpfile("wave.vcd");        //generate wave.vcd
-    $dumpvars(0, Basic_GeMM_CIM);    //dump all of the TB module data
-end
 
 endmodule // Basic_GeMM_CIM
