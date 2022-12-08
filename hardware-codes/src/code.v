@@ -12,7 +12,7 @@
 `define SCC     7'b01000_11      // sxx   rs1,rs2,imm[11:0]
 `define MCC     7'b00100_11      // xxxi  rd,rs1,imm[11:0]
 `define RCC     7'b01100_11      // xxx   rd,rs1,rs2
-`define MAC     7'b11111_11      // mac   rd,rs1,rs2
+`define CIM     7'b11111_11      // op code for CIM-type instructions
 
 /*
 mul rd, rs1, rs2; using opcode RCC, fct3==5, code in line 190
@@ -35,7 +35,6 @@ module darkriscv
     input             RES,   // reset
     input             HLT,   // halt
     
-
     input      [31:0] IDATA, // instruction data bus
     output     [31:0] IADDR, // instruction addr bus
     
@@ -43,14 +42,22 @@ module darkriscv
     output     [31:0] DATAO, // data bus (output)
     output     [31:0] DADDR, // addr bus
     
-    output     [ 3:0] BE,   // byte enable
+    output     [ 3:0] BE,    // byte enable
     output            WR,    // write enable
     output            RD,    // read enable 
-    
+    output            IDLE,  // idle output
+    output     [3:0]  DEBUG, // old-school osciloscope based debug! :)
 
-    output            IDLE,   // idle output
-    
-    output [3:0]  DEBUG       // old-school osciloscope based debug! :)
+    // for CIM module's connection
+    input      [31:0] mem_output,
+    input      [31:0] cim_output,
+    output            web,
+    output            cimeb,
+    output            partial_sum_eb,
+    output            reset_output_reg,
+    output     [3:0]  output_reg,
+    output     [31:0] address,
+    output     [31:0] input_data
 );
 
     // dummy 32-bit words w/ all-0s and all-1s: 
@@ -62,7 +69,7 @@ module darkriscv
 
     reg [31:0] XIDATA;
 
-    reg XLUI, XAUIPC, XJAL, XJALR, XBCC, XLCC, XSCC, XMCC, XRCC, XMAC, XRES=1; //, XFCC, XCCC;
+    reg XLUI, XAUIPC, XJAL, XJALR, XBCC, XLCC, XSCC, XMCC, XRCC, XCIM, XRES=1; //, XFCC, XCCC;
 
     reg [31:0] XSIMM;
     reg [31:0] XUIMM;
@@ -82,7 +89,7 @@ module darkriscv
         XMCC   <= XRES ? 0 : HLT ? XMCC   : IDATA[6:0]==`MCC;
 
         XRCC   <= XRES ? 0 : HLT ? XRCC   : IDATA[6:0]==`RCC;
-        XMAC   <= XRES ? 0 : HLT ? XRCC   : IDATA[6:0]==`MAC;
+        XCIM   <= XRES ? 0 : HLT ? XRCC   : IDATA[6:0]==`CIM;
         //XFCC   <= XRES ? 0 : HLT ? XFCC   : IDATA[6:0]==`FCC;
         //XCCC   <= XRES ? 0 : HLT ? XCCC   : IDATA[6:0]==`CCC;
 
@@ -135,7 +142,7 @@ module darkriscv
     wire    MCC = FLUSH ? 0 : XMCC; // OPCODE==7'b0010011; //FCT3
     
     wire    RCC = FLUSH ? 0 : XRCC; // OPCODE==7'b0110011; //FCT3
-    wire    MAC = FLUSH ? 0 : XMAC; // OPCODE==7'b0110011; //FCT3
+    wire    CIM = FLUSH ? 0 : XCIM; // OPCODE==7'b0110011; //FCT3
     //wire    FCC = FLUSH ? 0 : XFCC; // OPCODE==7'b0001111; //FCT3
     //wire    CCC = FLUSH ? 0 : XCCC; // OPCODE==7'b1110011; //FCT3
 
@@ -253,7 +260,7 @@ module darkriscv
     // IO and memory interface
 
     assign DATAO = SDATA; // SCC ? SDATA : 0;
-    assign DADDR = U1REG + SIMM; // (SCC||LCC) ? U1REG + SIMM : 0;
+    assign DADDR = (U1REG + SIMM) >> 4; // (SCC||LCC) ? U1REG + SIMM : 0;
 
     // based in the Scc and Lcc   
     assign RD = LCC;
@@ -272,7 +279,7 @@ module darkriscv
 
     assign DEBUG = { XRES, |FLUSH, SCC, LCC };
 
-    initial begin
+initial begin
     $monitor("---reg1[11]/a1=%8d---reg1[8]/s0=%8d---, ",REG1[11],REG1[8]);
 end
 
