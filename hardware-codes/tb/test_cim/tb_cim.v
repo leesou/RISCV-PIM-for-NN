@@ -83,13 +83,42 @@ initial begin
     partial_sum_eb_reg <= 1;
     reset_output_reg_reg <= 0;
     address_reg <= 0;
-    input_data_reg <= 32'h88888888;
+    input_data_reg <= 32'h33333333;
+    #2
+    web_reg <= 0;
+    cimeb_reg <= 0;
+    partial_sum_eb_reg <= 1;
+    reset_output_reg_reg <= 0;
+    address_reg <= 0;
+    input_data_reg <= 32'h44444444;
 
     // read output
+    #2
+    web_reg <= 0;
+    cimeb_reg <= 0;
+    partial_sum_eb_reg <= 0;
+    reset_output_reg_reg <= 0;
+    address_reg <= 0;
+    output_reg_reg <= 0;
+    #2
+    output_reg_reg <= 1;
+    #2
+    output_reg_reg <= 2;
+    #2
+    output_reg_reg <= 3;
+    #2
+    output_reg_reg <= 4;
+    #2
+    output_reg_reg <= 5;
+    #2
+    output_reg_reg <= 6;
+    #2
+    output_reg_reg <= 7;
 
     // reset register
 
-    #100
+
+    #50
     $stop;
 end
 
