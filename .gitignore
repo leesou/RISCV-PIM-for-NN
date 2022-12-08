@@ -1,3 +1,6 @@
 nn-codes/c-code/test/*
 *.o
 *.asm
+
+*/wave
+*/wave.vcd
