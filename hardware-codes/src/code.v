@@ -57,11 +57,11 @@ module darkriscv
     // for CIM module's connection
     //input      [31:0] mem_output,
     input      [31:0] cim_output,
-    output            web,
-    output            cimeb,
-    output            partial_sum_eb,
+    output            we,
+    output            cime,
+    output            partial_sum_e,
     output            reset_output_reg,
-    output     [3:0]  output_reg,
+    output     [ 3:0] output_reg,
     output     [31:0] address,
     output     [31:0] input_data
 );
@@ -223,15 +223,15 @@ module darkriscv
 
 
     // for CIM type instructions
-    assign web = CIM ? (FCT3==CIM_WR ? 1 : 0) : 0;
-    assign cimeb = CIM ? ((FCT3==CIM_COMP || FCT3==CIM_REG_RD || FCT3==CIM_REG_RESET) ? 1 : 0) : 0;
-    assign partial_sum_eb = CIM ? ((FCT3==CIM_COMP) ? 1 : 0) : 0;
-    assign reset_output_reg = CIM ? ((FCT3==CIM_REG_RESET ? 1 : 0)) : 0;
-    assign output_reg = CIM ? ((FCT3==CIM_REG_RD ? U1REG[3:0] : 0)) : 0;
-    assign address = CIM ? ((FCT3==CIM_WR || FCT3==CIM_COMP) ? U2REG
-                            (FCT3==CIM_RD): U1REG
-                            : 0) : 0;
-    assign input_data = CIM ? ((FCT3==CIM_WR || FCT3==CIM_COMP) ? U1REG : 0) : 0;
+    assign we = CIM ? (FCT3==`CIM_WR ? 1 : 0) : 0;
+    assign cime = CIM ? ((FCT3==`CIM_COMP || FCT3==`CIM_REG_RD || FCT3==`CIM_REG_RESET) ? 1 : 0) : 0;
+    assign partial_sum_e = CIM ? ((FCT3==`CIM_COMP) ? 1 : 0) : 0;
+    assign reset_output_reg = CIM ? ((FCT3==`CIM_REG_RESET ? 1 : 0)) : 0;
+    assign output_reg = CIM ? ((FCT3==`CIM_REG_RD ? U1REG[3:0] : 0)) : 0;
+    assign address = CIM ? ((FCT3==`CIM_WR || FCT3==`CIM_COMP) ? U2REG :
+                            (FCT3==`CIM_RD)? U1REG : 0) :
+                            0;
+    assign input_data = CIM ? ((FCT3==`CIM_WR || FCT3==`CIM_COMP) ? U1REG : 0) : 0;
 
     always@(posedge CLK)
     begin
@@ -250,7 +250,7 @@ module darkriscv
                         LUI ? SIMM :
                         LCC ? LDATA :
                         MCC||RCC ? RMDATA:
-                        CIM && (FCT3==CIM_RD || FCT3==CIM_REG_RD) ? cim_output :
+                        CIM && (FCT3==`CIM_RD || FCT3==`CIM_REG_RD) ? cim_output :
                         //CCC ? CDATA : 
                         REG1[DPTR];
       
@@ -262,7 +262,7 @@ module darkriscv
                         LUI ? SIMM :
                         LCC ? LDATA :
                         MCC||RCC ? RMDATA:
-                        CIM && (FCT3==CIM_RD || FCT3==CIM_REG_RD) ? cim_output :                     
+                        CIM && (FCT3==`CIM_RD || FCT3==`CIM_REG_RD) ? cim_output :                     
                         REG2[DPTR];
 
 

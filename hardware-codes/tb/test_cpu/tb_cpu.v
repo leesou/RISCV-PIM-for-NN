@@ -3,9 +3,9 @@
 `define __RESETSP__ 32'd512
 `define __RESETPC__ 32'd0
 
-`include "src/code.v"
-`include "src/mem.v"
-`include "src/cim.v"
+`include "../../src/code.v"
+`include "../../src/mem.v"
+`include "../../src/cim.v"
 
 module TB;
 
@@ -25,7 +25,7 @@ initial CLK = 0;
 always #2 CLK = ~CLK;
 
 reg cs;
-wire web, cimeb, partial_sum_eb, reset_output_reg;
+wire we, cime, partial_sum_e, reset_output_reg;
 wire [3:0] output_reg;
 wire [31:0] address, input_data;
 wire [31:0] mem_output, cim_output;
@@ -76,9 +76,9 @@ darkriscv u_rvcpu(
 
     //.mem_output(mem_output),
     .cim_output(cim_output),
-    .web(web),
-    .cimeb(cimeb),
-    .partial_sum_eb(partial_sum_eb),
+    .we(we),
+    .cime(cime),
+    .partial_sum_e(partial_sum_e),
     .reset_output_reg(reset_output_reg),
     .output_reg(output_reg),
     .address(address),
@@ -90,9 +90,9 @@ Basic_GeMM_CIM cim(
     .cs(cs),
     //.mem_output(mem_output),
     .cim_output(cim_output),
-    .web(web),
-    .cimeb(cimeb),
-    .partial_sum_eb(partial_sum_eb),
+    .we(we),
+    .cime(cime),
+    .partial_sum_e(partial_sum_e),
     .reset_output_reg(reset_output_reg),
     .output_reg(output_reg),
     .address(address),
