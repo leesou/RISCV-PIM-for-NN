@@ -13,6 +13,12 @@
 `define MCC     7'b00100_11      // xxxi  rd,rs1,imm[11:0]
 `define RCC     7'b01100_11      // xxx   rd,rs1,rs2
 `define CIM     7'b11111_11      // op code for CIM-type instructions
+ 
+`define CIM_WR         3'b000
+`define CIM_COMP       3'b001
+`define CIM_RD         3'b010
+`define CIM_REG_RD     3'b011
+`define CIM_REG_RESET  3'b100
 
 /*
 mul rd, rs1, rs2; using opcode RCC, fct3==5, code in line 190
@@ -49,7 +55,7 @@ module darkriscv
     output     [3:0]  DEBUG, // old-school osciloscope based debug! :)
 
     // for CIM module's connection
-    input      [31:0] mem_output,
+    //input      [31:0] mem_output,
     input      [31:0] cim_output,
     output            web,
     output            cimeb,
@@ -216,6 +222,16 @@ module darkriscv
     wire [31:0] JVAL = JALR ? DADDR : PCSIMM; // SIMM + (JALR ? U1REG : PC);
 
 
+    // for CIM type instructions
+    assign web = CIM ? (FCT3==CIM_WR ? 1 : 0) : 0;
+    assign cimeb = CIM ? ((FCT3==CIM_COMP || FCT3==CIM_REG_RD || FCT3==CIM_REG_RESET) ? 1 : 0) : 0;
+    assign partial_sum_eb = CIM ? ((FCT3==CIM_COMP) ? 1 : 0) : 0;
+    assign reset_output_reg = CIM ? ((FCT3==CIM_REG_RESET ? 1 : 0)) : 0;
+    assign output_reg = CIM ? ((FCT3==CIM_REG_RD ? U1REG[3:0] : 0)) : 0;
+    assign address = CIM ? ((FCT3==CIM_WR || FCT3==CIM_COMP) ? U2REG
+                            (FCT3==CIM_RD): U1REG
+                            : 0) : 0;
+    assign input_data = CIM ? ((FCT3==CIM_WR || FCT3==CIM_COMP) ? U1REG : 0) : 0;
 
     always@(posedge CLK)
     begin
@@ -223,36 +239,36 @@ module darkriscv
         
         XRES <= |RESMODE;
 
-        FLUSH <= XRES ? 1 : HLT ? FLUSH :        // reset and halt
-                       (JAL||JALR||BMUX);  // flush the pipeline!
+        FLUSH <= XRES ? 1 : HLT ? FLUSH :   // reset and halt
+                        (JAL||JALR||BMUX);  // flush the pipeline!
 
         REG1[DPTR] <=   XRES ? (RESMODE[4:0]==2 ? `__RESETSP__ : 0)  :        // reset sp
-                       HLT ? REG1[DPTR] :        // halt
-                     !DPTR ? 0 :                // x0 = 0, always!
-                     AUIPC ? PCSIMM :
-                      JAL||
-                      JALR ? NXPC :
-                       LUI ? SIMM :
-                       LCC ? LDATA :
-                  MCC||RCC ? RMDATA:
-                       //CCC ? CDATA : 
-                             REG1[DPTR];
+                        HLT ? REG1[DPTR] :        // halt
+                        !DPTR ? 0 :               // x0 = 0, always!
+                        AUIPC ? PCSIMM :
+                        JAL|| JALR ? NXPC :
+                        LUI ? SIMM :
+                        LCC ? LDATA :
+                        MCC||RCC ? RMDATA:
+                        CIM && (FCT3==CIM_RD || FCT3==CIM_REG_RD) ? cim_output :
+                        //CCC ? CDATA : 
+                        REG1[DPTR];
       
         REG2[DPTR] <=   XRES ? (RESMODE[4:0]==2 ? `__RESETSP__ : 0) :        // reset sp     
-                       HLT ? REG2[DPTR] :        // halt
-                     !DPTR ? 0 :                // x0 = 0, always!
-                     AUIPC ? PCSIMM :
-                      JAL||
-                      JALR ? NXPC :
-                       LUI ? SIMM :
-                       LCC ? LDATA :
-                  MCC||RCC ? RMDATA:                      
-                             REG2[DPTR];
+                        HLT ? REG2[DPTR] :        // halt
+                        !DPTR ? 0 :               // x0 = 0, always!
+                        AUIPC ? PCSIMM :
+                        JAL|| JALR ? NXPC :
+                        LUI ? SIMM :
+                        LCC ? LDATA :
+                        MCC||RCC ? RMDATA:
+                        CIM && (FCT3==CIM_RD || FCT3==CIM_REG_RD) ? cim_output :                     
+                        REG2[DPTR];
 
 
         NXPC <= XRES ? `__RESETPC__ : HLT ? NXPC :   // reset and halt
-              JREQ ? JVAL :                   // jmp/bra
-                     NXPC+1;                   // normal flow
+                JREQ ? JVAL :                        // jmp/bra
+                NXPC+1;                              // normal flow
 
         PC   <= /*XRES ? `__RESETPC__ :*/ HLT ? PC : NXPC; // current program counter
     end

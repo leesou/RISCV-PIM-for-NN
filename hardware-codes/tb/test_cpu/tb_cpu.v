@@ -74,7 +74,7 @@ darkriscv u_rvcpu(
     .IDLE (IDLE),   // idle output
     .DEBUG(DEBUG),       // old-school osciloscope based debug! :)
 
-    .mem_output(mem_output),
+    //.mem_output(mem_output),
     .cim_output(cim_output),
     .web(web),
     .cimeb(cimeb),
@@ -88,7 +88,7 @@ darkriscv u_rvcpu(
 Basic_GeMM_CIM cim(
     .clk(CLK),
     .cs(cs),
-    .mem_output(mem_output),
+    //.mem_output(mem_output),
     .cim_output(cim_output),
     .web(web),
     .cimeb(cimeb),
