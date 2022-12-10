@@ -30,16 +30,20 @@ wire [3:0] output_reg;
 wire [31:0] address, input_data;
 wire [31:0] mem_output, cim_output;
 
+integer clkcycle;
+always @(posedge CLK) begin
+    if(clkcycle==100) $stop;
+    if(~RES) clkcycle <= clkcycle + 1;
+end
+
 initial begin
+    clkcycle = 0;
     cs = 1;
     RES = 1;
     HLT = 0;
     
-    #9 
+    #5
     RES = 0;
-
-    #100
-    $stop;
 end
 
 ram uram (
