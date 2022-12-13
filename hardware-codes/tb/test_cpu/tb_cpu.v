@@ -25,7 +25,7 @@ initial CLK = 0;
 always #2 CLK = ~CLK;
 
 reg cs;
-wire we, cime, partial_sum_e, reset_output_reg;
+wire write, cim, partial_sum, reset_output;
 wire [3:0] output_reg;
 wire [31:0] address, input_data;
 wire [31:0] mem_output, cim_output;
@@ -80,24 +80,24 @@ darkriscv u_rvcpu(
 
     //.mem_output(mem_output),
     .cim_output(cim_output),
-    .we(we),
-    .cime(cime),
-    .partial_sum_e(partial_sum_e),
-    .reset_output_reg(reset_output_reg),
+    .write(write),
+    .cim(cim),
+    .partial_sum(partial_sum),
+    .reset_output(reset_output),
     .output_reg(output_reg),
     .address(address),
     .input_data(input_data)
 );
 
-Basic_GeMM_CIM cim(
+Basic_GeMM_CIM u_cim(
     .clk(CLK),
     .cs(cs),
     //.mem_output(mem_output),
     .cim_output(cim_output),
-    .we(we),
-    .cime(cime),
-    .partial_sum_e(partial_sum_e),
-    .reset_output_reg(reset_output_reg),
+    .write(write),
+    .cim(cim),
+    .partial_sum(partial_sum),
+    .reset_output(reset_output),
     .output_reg(output_reg),
     .address(address),
     .input_data(input_data)

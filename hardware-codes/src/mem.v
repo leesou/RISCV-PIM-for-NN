@@ -48,7 +48,7 @@ initial begin
     for(i=0;i<=LEN-1;i=i+1) begin
         mem_core[i] = 0;
     end
-    $readmemh("tb_wr_rd.hex",mem_core);
+    $readmemh("tb_code.hex",mem_core);
 end
 
 always @(posedge CLK) begin

@@ -19,10 +19,10 @@ module Basic_GeMM_CIM (
 //input
     clk,
     cs,
-    we,
-    cime,
-	partial_sum_e,
-	reset_output_reg,
+    write,
+    cim,
+	partial_sum,
+	reset_output,
 	output_reg,
     address,
     input_data);
@@ -46,10 +46,10 @@ parameter
 //--------------Input Ports----------------------- 
 input                  clk; //clk input
 input                  cs; //overall enable, chip select
-input                  we; //write enable, high active
-input                  cime; //CIM enable, high active
-input                  partial_sum_e; // whether producing partial sums, high active
-input                  reset_output_reg; // whether to reset output registers, high active
+input                  write; //write enable, high active
+input                  cim; //CIM enable, high active
+input                  partial_sum; // whether producing partial sums, high active
+input                  reset_output; // whether to reset output registers, high active
 input [3:0]            output_reg; // indicate which output register need to be read
 input [31:0]           address; //address, both effective in memory mode & CIM mode
 input [31:0]           input_data; // input data, shared by memory & CIM mode
@@ -97,10 +97,10 @@ wire [31:0] addr6 = address+6;
 wire [31:0] addr7 = address+7;
 
 // Memory Write Block 
-// Write Operation : When we = 1, cs = 1
+// Write Operation : When write = 1, cs = 1
 always @ (posedge clk)
 begin : MEM_WRITE
-	if (cs && we) begin
+	if (cs && write) begin
     	mem[addr0] <= input_data[31:24];
     	mem[addr1] <= input_data[23:16];
     	mem[addr2] <= input_data[15:8];
@@ -128,7 +128,7 @@ assign cim_in7 = input_data[3:0];
 
 
 
-assign partial_sum0 = !cime ? 0 : cim_in0 * mem[{3'b000,addr0[6:0]}] 
+assign partial_sum0 = !cim ? 0 : cim_in0 * mem[{3'b000,addr0[6:0]}] 
                     + cim_in1 * mem[{3'b000,addr1[6:0]}] 
                     + cim_in2 * mem[{3'b000,addr2[6:0]}] 
                     + cim_in3 * mem[{3'b000,addr3[6:0]}]
@@ -137,7 +137,7 @@ assign partial_sum0 = !cime ? 0 : cim_in0 * mem[{3'b000,addr0[6:0]}]
                     + cim_in6 * mem[{3'b000,addr6[6:0]}] 
                     + cim_in7 * mem[{3'b000,addr7[6:0]}];
 
-assign partial_sum1 = !cime ? 0 : cim_in0 * mem[{3'b001,addr0[6:0]}] 
+assign partial_sum1 = !cim ? 0 : cim_in0 * mem[{3'b001,addr0[6:0]}] 
                     + cim_in1 * mem[{3'b001,addr1[6:0]}] 
                     + cim_in2 * mem[{3'b001,addr2[6:0]}] 
                     + cim_in3 * mem[{3'b001,addr3[6:0]}]
@@ -146,7 +146,7 @@ assign partial_sum1 = !cime ? 0 : cim_in0 * mem[{3'b001,addr0[6:0]}]
                     + cim_in6 * mem[{3'b001,addr6[6:0]}] 
                     + cim_in7 * mem[{3'b001,addr7[6:0]}];
 
-assign partial_sum2 = !cime ? 0 : cim_in0 * mem[{3'b010,addr0[6:0]}] 
+assign partial_sum2 = !cim ? 0 : cim_in0 * mem[{3'b010,addr0[6:0]}] 
                     + cim_in1 * mem[{3'b010,addr1[6:0]}] 
                     + cim_in2 * mem[{3'b010,addr2[6:0]}] 
                     + cim_in3 * mem[{3'b010,addr3[6:0]}]
@@ -155,7 +155,7 @@ assign partial_sum2 = !cime ? 0 : cim_in0 * mem[{3'b010,addr0[6:0]}]
                     + cim_in6 * mem[{3'b010,addr6[6:0]}] 
                     + cim_in7 * mem[{3'b010,addr7[6:0]}];
 
-assign partial_sum3 = !cime ? 0 : cim_in0 * mem[{3'b011,addr0[6:0]}] 
+assign partial_sum3 = !cim ? 0 : cim_in0 * mem[{3'b011,addr0[6:0]}] 
                     + cim_in1 * mem[{3'b011,addr1[6:0]}] 
                     + cim_in2 * mem[{3'b011,addr2[6:0]}] 
                     + cim_in3 * mem[{3'b011,addr3[6:0]}]
@@ -164,7 +164,7 @@ assign partial_sum3 = !cime ? 0 : cim_in0 * mem[{3'b011,addr0[6:0]}]
                     + cim_in6 * mem[{3'b011,addr6[6:0]}] 
                     + cim_in7 * mem[{3'b011,addr7[6:0]}];
 
-assign partial_sum4 = !cime ? 0 : cim_in0 * mem[{3'b100,addr0[6:0]}] 
+assign partial_sum4 = !cim ? 0 : cim_in0 * mem[{3'b100,addr0[6:0]}] 
                     + cim_in1 * mem[{3'b100,addr1[6:0]}] 
                     + cim_in2 * mem[{3'b100,addr2[6:0]}] 
                     + cim_in3 * mem[{3'b100,addr3[6:0]}]
@@ -173,7 +173,7 @@ assign partial_sum4 = !cime ? 0 : cim_in0 * mem[{3'b100,addr0[6:0]}]
                     + cim_in6 * mem[{3'b100,addr6[6:0]}] 
                     + cim_in7 * mem[{3'b100,addr7[6:0]}];
 
-assign partial_sum5 = !cime ? 0 : cim_in0 * mem[{3'b101,addr0[6:0]}] 
+assign partial_sum5 = !cim ? 0 : cim_in0 * mem[{3'b101,addr0[6:0]}] 
                     + cim_in1 * mem[{3'b101,addr1[6:0]}] 
                     + cim_in2 * mem[{3'b101,addr2[6:0]}] 
                     + cim_in3 * mem[{3'b101,addr3[6:0]}]
@@ -182,7 +182,7 @@ assign partial_sum5 = !cime ? 0 : cim_in0 * mem[{3'b101,addr0[6:0]}]
                     + cim_in6 * mem[{3'b101,addr6[6:0]}] 
                     + cim_in7 * mem[{3'b101,addr7[6:0]}];
 
-assign partial_sum6 = !cime ? 0 : cim_in0 * mem[{3'b110,addr0[6:0]}] 
+assign partial_sum6 = !cim ? 0 : cim_in0 * mem[{3'b110,addr0[6:0]}] 
                     + cim_in1 * mem[{3'b110,addr1[6:0]}] 
                     + cim_in2 * mem[{3'b110,addr2[6:0]}] 
                     + cim_in3 * mem[{3'b110,addr3[6:0]}]
@@ -191,7 +191,7 @@ assign partial_sum6 = !cime ? 0 : cim_in0 * mem[{3'b110,addr0[6:0]}]
                     + cim_in6 * mem[{3'b110,addr6[6:0]}] 
                     + cim_in7 * mem[{3'b110,addr7[6:0]}];
 
-assign partial_sum7 = !cime ? 0 : cim_in0 * mem[{3'b111,addr0[6:0]}] 
+assign partial_sum7 = !cim ? 0 : cim_in0 * mem[{3'b111,addr0[6:0]}] 
                     + cim_in1 * mem[{3'b111,addr1[6:0]}] 
                     + cim_in2 * mem[{3'b111,addr2[6:0]}] 
                     + cim_in3 * mem[{3'b111,addr3[6:0]}]
@@ -201,23 +201,23 @@ assign partial_sum7 = !cime ? 0 : cim_in0 * mem[{3'b111,addr0[6:0]}]
                     + cim_in7 * mem[{3'b111,addr7[6:0]}];
 
 
-// assign mem_output = !cime ? mem[addr0] : 0;
+// assign mem_output = !cim ? mem[addr0] : 0;
 
 // Memory Read Block 
-// Read Operation : When we = 0, oe = 1, cs = 1
+// Read Operation : When write = 0, oe = 1, cs = 1
 always @ (posedge clk)
 begin
-	if (cs && !we) begin
-		if(cime) begin
+	if (cs && !write) begin
+		if(cim) begin
     		// enter cim mode
-    		cim_out0_tmp <= reset_output_reg ? 0 : (cim_out0_tmp + (partial_sum_e ? partial_sum0 : 0));
-			cim_out1_tmp <= reset_output_reg ? 0 : (cim_out1_tmp + (partial_sum_e ? partial_sum1 : 0));
-			cim_out2_tmp <= reset_output_reg ? 0 : (cim_out2_tmp + (partial_sum_e ? partial_sum2 : 0));
-			cim_out3_tmp <= reset_output_reg ? 0 : (cim_out3_tmp + (partial_sum_e ? partial_sum3 : 0));
-			cim_out4_tmp <= reset_output_reg ? 0 : (cim_out4_tmp + (partial_sum_e ? partial_sum4 : 0));
-			cim_out5_tmp <= reset_output_reg ? 0 : (cim_out5_tmp + (partial_sum_e ? partial_sum5 : 0));
-			cim_out6_tmp <= reset_output_reg ? 0 : (cim_out6_tmp + (partial_sum_e ? partial_sum6 : 0));
-			cim_out7_tmp <= reset_output_reg ? 0 : (cim_out7_tmp + (partial_sum_e ? partial_sum7 : 0));
+    		cim_out0_tmp <= reset_output ? 0 : (cim_out0_tmp + (partial_sum ? partial_sum0 : 0));
+			cim_out1_tmp <= reset_output ? 0 : (cim_out1_tmp + (partial_sum ? partial_sum1 : 0));
+			cim_out2_tmp <= reset_output ? 0 : (cim_out2_tmp + (partial_sum ? partial_sum2 : 0));
+			cim_out3_tmp <= reset_output ? 0 : (cim_out3_tmp + (partial_sum ? partial_sum3 : 0));
+			cim_out4_tmp <= reset_output ? 0 : (cim_out4_tmp + (partial_sum ? partial_sum4 : 0));
+			cim_out5_tmp <= reset_output ? 0 : (cim_out5_tmp + (partial_sum ? partial_sum5 : 0));
+			cim_out6_tmp <= reset_output ? 0 : (cim_out6_tmp + (partial_sum ? partial_sum6 : 0));
+			cim_out7_tmp <= reset_output ? 0 : (cim_out7_tmp + (partial_sum ? partial_sum7 : 0));
     	end
   end
 end
@@ -231,7 +231,7 @@ assign cim_out5 = {cim_out5_tmp[13] ? ALL1[31:6] : ALL0[31:6], cim_out5_tmp[13:1
 assign cim_out6 = {cim_out6_tmp[13] ? ALL1[31:6] : ALL0[31:6], cim_out6_tmp[13:13-ADC_PRECISION+1]};
 assign cim_out7 = {cim_out7_tmp[13] ? ALL1[31:6] : ALL0[31:6], cim_out7_tmp[13:13-ADC_PRECISION+1]};
 
-assign cim_output = cime ? (output_reg==0 ? cim_out0 : 
+assign cim_output = cim ? (output_reg==0 ? cim_out0 : 
 					output_reg==1 ? cim_out1 : 
 					output_reg==2 ? cim_out2 : 
 					output_reg==3 ? cim_out3 : 

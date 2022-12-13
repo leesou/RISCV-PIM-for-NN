@@ -57,10 +57,10 @@ module darkriscv
     // for CIM module's connection
     //input      [31:0] mem_output,
     input      [31:0] cim_output,
-    output            we,
-    output            cime,
-    output            partial_sum_e,
-    output            reset_output_reg,
+    output            write,
+    output            cim,
+    output            partial_sum,
+    output            reset_output,
     output     [ 3:0] output_reg,
     output     [31:0] address,
     output     [31:0] input_data
@@ -223,10 +223,10 @@ module darkriscv
 
 
     // for CIM type instructions
-    assign we = CIM ? (FCT3==`CIM_WR ? 1 : 0) : 0;
-    assign cime = CIM ? ((FCT3==`CIM_COMP || FCT3==`CIM_REG_RD || FCT3==`CIM_REG_RESET) ? 1 : 0) : 0;
-    assign partial_sum_e = CIM ? ((FCT3==`CIM_COMP) ? 1 : 0) : 0;
-    assign reset_output_reg = CIM ? ((FCT3==`CIM_REG_RESET ? 1 : 0)) : 0;
+    assign write = CIM ? (FCT3==`CIM_WR ? 1 : 0) : 0;
+    assign cim = CIM ? ((FCT3==`CIM_COMP || FCT3==`CIM_REG_RD || FCT3==`CIM_REG_RESET) ? 1 : 0) : 0;
+    assign partial_sum = CIM ? ((FCT3==`CIM_COMP) ? 1 : 0) : 0;
+    assign reset_output = CIM ? ((FCT3==`CIM_REG_RESET ? 1 : 0)) : 0;
     assign output_reg = CIM ? ((FCT3==`CIM_REG_RD ? U1REG[3:0] : 0)) : 0;
     assign address = CIM ? ((FCT3==`CIM_WR || FCT3==`CIM_COMP) ? U2REG :
                             (FCT3==`CIM_RD)? U1REG : 0) :
