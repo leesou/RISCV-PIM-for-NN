@@ -69,3 +69,57 @@ addi x9, x9, 4
 cimrd x11, x9
 
 // conduct in memory mvm
+xor x9, x9, x9
+xor x8, x8, x8
+addi x9, x9, 40
+lw x11, (x9)
+cimcomp x11, x8
+addi x9, x9, 4
+lw x11, (x9)
+cimcomp x11, x8
+addi x8, x8, 8
+addi x9, x9, 4
+lw x11, (x9)
+cimcomp x11, x8
+addi x9, x9, 4
+lw x11, (x9)
+cimcomp x11, x8
+
+// read cim_output registers
+xor x9, x9, x9
+cimregrd x11, x9
+addi x9, x9, 1
+cimregrd x11, x9
+addi x9, x9, 1
+cimregrd x11, x9
+addi x9, x9, 1
+cimregrd x11, x9
+addi x9, x9, 1
+cimregrd x11, x9
+addi x9, x9, 1
+cimregrd x11, x9
+addi x9, x9, 1
+cimregrd x11, x9
+addi x9, x9, 1
+cimregrd x11, x9
+
+// reset cim_output registers
+cimregreset
+
+// read cim_output registers again to check reset
+xor x9, x9, x9
+cimregrd x11, x9
+addi x9, x9, 1
+cimregrd x11, x9
+addi x9, x9, 1
+cimregrd x11, x9
+addi x9, x9, 1
+cimregrd x11, x9
+addi x9, x9, 1
+cimregrd x11, x9
+addi x9, x9, 1
+cimregrd x11, x9
+addi x9, x9, 1
+cimregrd x11, x9
+addi x9, x9, 1
+cimregrd x11, x9
