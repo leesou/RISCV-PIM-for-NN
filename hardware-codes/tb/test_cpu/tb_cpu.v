@@ -3,9 +3,9 @@
 `define __RESETSP__ 32'd512
 `define __RESETPC__ 32'd0
 
-`include "../../src/code.v"
-`include "../../src/mem.v"
-`include "../../src/cim.v"
+`include "src/code.v"
+`include "src/mem.v"
+`include "src/cim.v"
 
 module TB;
 
@@ -24,26 +24,26 @@ wire [31:0] IDATA, IADDR, DATAI, DATAO, DADDR;
 initial CLK = 0;
 always #2 CLK = ~CLK;
 
+reg cim_debug;
 reg cs;
 wire write, cim, partial_sum, reset_output;
 wire [3:0] output_reg;
 wire [31:0] address, input_data;
 wire [31:0] mem_output, cim_output;
 
-integer clkcycle;
-always @(posedge CLK) begin
-    if(clkcycle==100) $stop;
-    if(~RES) clkcycle <= clkcycle + 1;
-end
-
 initial begin
-    clkcycle = 0;
     cs = 1;
+    cim_debug = 0;
     RES = 1;
     HLT = 0;
-    
-    #5
+    #1
     RES = 0;
+
+    #1000
+    cim_debug = 1;
+    #2 
+    cim_debug = 0;
+    $stop;
 end
 
 ram uram (
@@ -100,7 +100,8 @@ Basic_GeMM_CIM u_cim(
     .reset_output(reset_output),
     .output_reg(output_reg),
     .address(address),
-    .input_data(input_data)
+    .input_data(input_data),
+    .debug(cim_debug)
 );
 
 endmodule
