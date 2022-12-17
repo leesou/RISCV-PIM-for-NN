@@ -25,7 +25,8 @@ module Basic_GeMM_CIM (
 	reset_output,
 	output_reg,
     address,
-    input_data);
+    input_data,
+    debug);
 
 //Need to define the address map first and 
 //change all of the following parameter accordingly
@@ -53,6 +54,7 @@ input                  reset_output; // whether to reset output registers, high 
 input [3:0]            output_reg; // indicate which output register need to be read
 input [31:0]           address; //address, both effective in memory mode & CIM mode
 input [31:0]           input_data; // input data, shared by memory & CIM mode
+input                  debug;
 
 wire  [CIM_INPUT_PRECISION-1:0] cim_in0, cim_in1, cim_in2, cim_in3, cim_in4, cim_in5, cim_in6, cim_in7;
 
@@ -69,6 +71,10 @@ wire       [31:0] cim_out0, cim_out1, cim_out2, cim_out3, cim_out4, cim_out5, ci
 //--------------Internal variables---------------- 
 
 reg [DATA_WIDTH-1:0] mem [0:RAM_DEPTH-1];
+
+//--------------For Debug---------------- 
+
+integer out_file;
 
 //--------------Code Starts Here------------------ 
 
@@ -238,7 +244,7 @@ assign cim_output = cim ? (output_reg==0 ? cim_out0 :
 					output_reg==4 ? cim_out4 : 
 					output_reg==5 ? cim_out5 : 
 					output_reg==6 ? cim_out6 : 
-					output_reg==7 ? cim_out7 : 0) : mem[addr0]; 
+					output_reg==7 ? cim_out7 : 0) : {(mem[addr0][DATA_WIDTH-1] ? ALL1[31:DATA_WIDTH] : ALL0[31:DATA_WIDTH]) , mem[addr0]}; 
 
 
 
@@ -258,7 +264,23 @@ initial begin
 	cim_out5_tmp = 0;
 	cim_out6_tmp = 0;
 	cim_out7_tmp = 0;
-	$monitor("mem[0]=%8d, mem[1]=%8d, mem[2]=%8d, mem[3]=%8d", mem[0], mem[1], mem[2], mem[3]);
+	//$monitor("mem[0]=%8d, mem[1]=%8d, mem[2]=%8d, mem[3]=%8d", mem[0], mem[1], mem[2], mem[3]);
+    out_file = $fopen("./cim.output", "w");
+end
+
+always @ (posedge clk) 
+begin
+    if(debug) 
+    begin
+        for(i=1; i<=RAM_DEPTH; i+=1) 
+        begin
+            $fwrite(out_file, "%h ", mem[i-1]);
+            if(i%128==0) 
+            begin
+                $fwrite(out_file, "\n");
+            end
+        end
+    end
 end
 
 endmodule // Basic_GeMM_CIM
