@@ -75,6 +75,7 @@ reg [DATA_WIDTH-1:0] mem [0:RAM_DEPTH-1];
 //--------------For Debug---------------- 
 
 integer out_file;
+integer reg_out_file;
 
 //--------------Code Starts Here------------------ 
 
@@ -266,6 +267,7 @@ initial begin
 	cim_out7_tmp = 0;
 	//$monitor("mem[0]=%8d, mem[1]=%8d, mem[2]=%8d, mem[3]=%8d", mem[0], mem[1], mem[2], mem[3]);
     out_file = $fopen("./cim.output", "w");
+    reg_out_file = $fopen("./cim_reg.output", "w");
 end
 
 always @ (posedge clk) 
@@ -280,6 +282,23 @@ begin
                 $fwrite(out_file, "\n");
             end
         end
+
+        $fwrite(reg_out_file, "%h ", cim_out0_tmp);
+        $fwrite(reg_out_file, "%h ", cim_out1_tmp);
+        $fwrite(reg_out_file, "%h ", cim_out2_tmp);
+        $fwrite(reg_out_file, "%h ", cim_out3_tmp);
+        $fwrite(reg_out_file, "%h ", cim_out4_tmp);
+        $fwrite(reg_out_file, "%h ", cim_out5_tmp);
+        $fwrite(reg_out_file, "%h ", cim_out6_tmp);
+        $fwrite(reg_out_file, "%h\n", cim_out7_tmp);
+        $fwrite(reg_out_file, "%h ", cim_out0);
+        $fwrite(reg_out_file, "%h ", cim_out1);
+        $fwrite(reg_out_file, "%h ", cim_out2);
+        $fwrite(reg_out_file, "%h ", cim_out3);
+        $fwrite(reg_out_file, "%h ", cim_out4);
+        $fwrite(reg_out_file, "%h ", cim_out5);
+        $fwrite(reg_out_file, "%h ", cim_out6);
+        $fwrite(reg_out_file, "%h\n", cim_out7);
     end
 end
 
