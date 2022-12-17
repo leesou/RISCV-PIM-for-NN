@@ -268,7 +268,7 @@ module darkriscv
 
         NXPC <= XRES ? `__RESETPC__ : HLT ? NXPC :   // reset and halt
                 JREQ ? JVAL :                        // jmp/bra
-                NXPC+1;                              // normal flow
+                NXPC+4;                              // normal flow
 
         PC   <= /*XRES ? `__RESETPC__ :*/ HLT ? PC : NXPC; // current program counter
     end
@@ -276,7 +276,7 @@ module darkriscv
     // IO and memory interface
 
     assign DATAO = SDATA; // SCC ? SDATA : 0;
-    assign DADDR = (U1REG + SIMM) >> 4; // (SCC||LCC) ? U1REG + SIMM : 0;
+    assign DADDR = U1REG + SIMM; // (SCC||LCC) ? U1REG + SIMM : 0;
 
     // based in the Scc and Lcc   
     assign RD = LCC;
@@ -296,7 +296,7 @@ module darkriscv
     assign DEBUG = { XRES, |FLUSH, SCC, LCC };
 
 initial begin
-    $monitor("---reg1[11]/a1=%8d---reg1[8]/s0=%8d---, ",REG1[11],REG1[8]);
+    $monitor("reg1[11]=%8h, reg1[8]=%8h, reg1[9]=%8h",REG1[11],REG1[8],REG1[9]);
 end
 
 endmodule
