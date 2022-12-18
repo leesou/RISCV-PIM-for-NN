@@ -155,7 +155,7 @@ module darkriscv
     reg [31:0] REG1 [0:31];	// general-purpose 32x32-bit registers (s1)
     reg [31:0] REG2 [0:31];	// general-purpose 32x32-bit registers (s2)
 
-    reg [31:0] NXPC;        // 32-bit program counter t+1
+    wire [31:0] NXPC;        // 32-bit program counter t+1
     reg [31:0] PC;		    // 32-bit program counter t+0
 
     // source-1 and source-1 register selection
@@ -266,12 +266,14 @@ module darkriscv
                         REG2[DPTR];
 
 
-        NXPC <= XRES ? `__RESETPC__ : HLT ? NXPC :   // reset and halt
-                JREQ ? JVAL :                        // jmp/bra
-                NXPC+4;                              // normal flow
+        
 
         PC   <= /*XRES ? `__RESETPC__ :*/ HLT ? PC : NXPC; // current program counter
     end
+
+    assign NXPC = XRES ? `__RESETPC__ : HLT ? NXPC :   // reset and halt
+                    JREQ ? JVAL :                        // jmp/bra
+                    PC+4;                              // normal flow
 
     // IO and memory interface
 
