@@ -3,6 +3,8 @@
 `define __RESETSP__ 32'd512
 `define __RESETPC__ 32'd0
 
+`define TEST_TYPE 0 // 0: test CPU, 1: test one-tile matmul, 2: test full matmul
+
 `include "src/code.v"
 `include "src/mem.v"
 `include "src/cim.v"
