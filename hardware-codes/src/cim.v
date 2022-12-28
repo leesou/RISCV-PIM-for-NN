@@ -207,14 +207,14 @@ assign partial_sum7 = !cim ? 0 : cim_in0 * mem[{3'b111,addr0[6:0]}]
                     + cim_in6 * mem[{3'b111,addr6[6:0]}] 
                     + cim_in7 * mem[{3'b111,addr7[6:0]}];
 
-assign cim_out0 = {partial_sum0[13] ? ALL1[31:6] : ALL0[31:6], partial_sum0[13:13-ADC_PRECISION+1]};
-assign cim_out1 = {partial_sum1[13] ? ALL1[31:6] : ALL0[31:6], partial_sum1[13:13-ADC_PRECISION+1]};
-assign cim_out2 = {partial_sum2[13] ? ALL1[31:6] : ALL0[31:6], partial_sum2[13:13-ADC_PRECISION+1]};
-assign cim_out3 = {partial_sum3[13] ? ALL1[31:6] : ALL0[31:6], partial_sum3[13:13-ADC_PRECISION+1]};
-assign cim_out4 = {partial_sum4[13] ? ALL1[31:6] : ALL0[31:6], partial_sum4[13:13-ADC_PRECISION+1]};
-assign cim_out5 = {partial_sum5[13] ? ALL1[31:6] : ALL0[31:6], partial_sum5[13:13-ADC_PRECISION+1]};
-assign cim_out6 = {partial_sum6[13] ? ALL1[31:6] : ALL0[31:6], partial_sum6[13:13-ADC_PRECISION+1]};
-assign cim_out7 = {partial_sum7[13] ? ALL1[31:6] : ALL0[31:6], partial_sum7[13:13-ADC_PRECISION+1]};
+assign cim_out0 = {partial_sum0[14] ? ALL1[31:6] : ALL0[31:6], partial_sum0[14:14-ADC_PRECISION+1]};
+assign cim_out1 = {partial_sum1[14] ? ALL1[31:6] : ALL0[31:6], partial_sum1[14:14-ADC_PRECISION+1]};
+assign cim_out2 = {partial_sum2[14] ? ALL1[31:6] : ALL0[31:6], partial_sum2[14:14-ADC_PRECISION+1]};
+assign cim_out3 = {partial_sum3[14] ? ALL1[31:6] : ALL0[31:6], partial_sum3[14:14-ADC_PRECISION+1]};
+assign cim_out4 = {partial_sum4[14] ? ALL1[31:6] : ALL0[31:6], partial_sum4[14:14-ADC_PRECISION+1]};
+assign cim_out5 = {partial_sum5[14] ? ALL1[31:6] : ALL0[31:6], partial_sum5[14:14-ADC_PRECISION+1]};
+assign cim_out6 = {partial_sum6[14] ? ALL1[31:6] : ALL0[31:6], partial_sum6[14:14-ADC_PRECISION+1]};
+assign cim_out7 = {partial_sum7[14] ? ALL1[31:6] : ALL0[31:6], partial_sum7[14:14-ADC_PRECISION+1]};
 
 // assign mem_output = !cim ? mem[addr0] : 0;
 
