@@ -1,6 +1,15 @@
-nn-codes/c-code/test/*
+nn-codes/asm
+nn-codes/asm/*
+nn-codes/c-code
+nn-codes/c-code/*
 *.o
 *.asm
+*nn-codes/verification-codes/software_simulation
+*nn-codes/verification-codes/data_generation
 
-*/wave
-*/wave.vcd
+wave
+wave.vcd
+*.output
+
+.vscode
+.vscode/*
