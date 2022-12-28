@@ -15,11 +15,11 @@ always #1 clk = ~clk;
 
 reg [3:0] output_reg_reg;
 reg [31:0] address_reg, input_data_reg;
-reg cs_reg, write_reg, cim_reg, partial_sum_reg, reset_output_reg;
+reg cs_reg, write_reg, cim_reg, partial_sum_reg, reset_output_reg, debug_reg;
 
 wire [3:0] output_reg;
 wire[31:0] address, input_data;
-wire cs, write, cim, partial_sum, reset_output;
+wire cs, write, cim, partial_sum, reset_output, debug;
 wire[31:0] cim_output; 
 
 assign output_reg = output_reg_reg;
@@ -30,6 +30,7 @@ assign write = write_reg;
 assign cim = cim_reg;
 assign partial_sum = partial_sum_reg;
 assign reset_output = reset_output_reg;
+assign debug = debug_reg;
 
 initial begin
     #0
@@ -41,6 +42,7 @@ initial begin
     output_reg_reg <= 0;
     address_reg <= 0;
     input_data_reg <= 0;
+    debug_reg <= 0;
 
     // write cim memory
     #2
@@ -117,6 +119,12 @@ initial begin
     #2
     output_reg_reg <= 7;
 
+    // record accumulation results
+    #2
+    debug_reg <= 1;
+    #2
+    debug_reg <= 0;
+
     // reset register
     #2
     write_reg <= 0;
@@ -163,6 +171,10 @@ initial begin
     output_reg_reg <= 7;
 
     #50
+    // record reset results
+    debug_reg <= 1;
+    #2
+    debug_reg <= 0;
     $stop;
 end
 
@@ -177,7 +189,8 @@ Basic_GeMM_CIM u_cim(
     .address(address),
     .input_data(input_data),
     //.mem_output(mem_output),
-    .cim_output(cim_output)
+    .cim_output(cim_output),
+    .debug(debug)
 );
 
 

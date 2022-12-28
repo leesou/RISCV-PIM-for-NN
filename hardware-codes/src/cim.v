@@ -292,14 +292,14 @@ begin
         $fwrite(reg_out_file, "%h ", cim_out5_tmp);
         $fwrite(reg_out_file, "%h ", cim_out6_tmp);
         $fwrite(reg_out_file, "%h\n", cim_out7_tmp);
-        $fwrite(reg_out_file, "%h ", cim_out0);
-        $fwrite(reg_out_file, "%h ", cim_out1);
-        $fwrite(reg_out_file, "%h ", cim_out2);
-        $fwrite(reg_out_file, "%h ", cim_out3);
-        $fwrite(reg_out_file, "%h ", cim_out4);
-        $fwrite(reg_out_file, "%h ", cim_out5);
-        $fwrite(reg_out_file, "%h ", cim_out6);
-        $fwrite(reg_out_file, "%h\n", cim_out7);
+        // $fwrite(reg_out_file, "%h ", cim_out0);
+        // $fwrite(reg_out_file, "%h ", cim_out1);
+        // $fwrite(reg_out_file, "%h ", cim_out2);
+        // $fwrite(reg_out_file, "%h ", cim_out3);
+        // $fwrite(reg_out_file, "%h ", cim_out4);
+        // $fwrite(reg_out_file, "%h ", cim_out5);
+        // $fwrite(reg_out_file, "%h ", cim_out6);
+        // $fwrite(reg_out_file, "%h\n", cim_out7);
     end
 end
 
