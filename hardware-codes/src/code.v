@@ -298,7 +298,13 @@ module darkriscv
     assign DEBUG = { XRES, |FLUSH, SCC, LCC };
 
 initial begin
-    $monitor("reg1[11]=%8h, reg1[8]=%8h, reg1[9]=%8h",REG1[11],REG1[8],REG1[9]);
+    if (`TEST_TYPE == 0) begin
+        $monitor("reg1[11]=%8h, reg1[8]=%8h, reg1[9]=%8h", REG1[11], REG1[8], REG1[9]);
+    end
+    if (`TEST_TYPE == 1) begin
+        $monitor("reg1[17]=%8d, reg1[18]=%8d, reg1[21]=%8h, reg1[24]=%8h, reg1[26]=%8d, reg1[27]=%8d",
+                REG1[17], REG1[18], REG1[21], REG1[24], REG1[26], REG1[27]);
+    end
 end
 
 endmodule
