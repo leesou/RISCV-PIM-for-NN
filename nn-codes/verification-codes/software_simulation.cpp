@@ -119,8 +119,8 @@ void flat_conv_to_matmul()
 void padding_2dmat()
 {
     // padding weight matrix to align heigh/width to tile height/width
-    int weight_height_padding = TILE_HEIGHT - (weight_2d_matrix.size() % TILE_HEIGHT);
-    int weight_width_padding = TILE_WIDTH - (weight_2d_matrix[0].size() % TILE_WIDTH);
+    int weight_height_padding = (TILE_HEIGHT - (weight_2d_matrix.size() % TILE_HEIGHT)) % TILE_HEIGHT;
+    int weight_width_padding = (TILE_WIDTH - (weight_2d_matrix[0].size() % TILE_WIDTH)) % TILE_WIDTH;
     for(int i=0; i<weight_2d_matrix.size(); ++i)
     {
         for(int j=0; j<weight_width_padding; ++j)
@@ -132,7 +132,7 @@ void padding_2dmat()
         weight_2d_matrix.push_back(weight_height_padding_vec);
 
     // padding input matrix to align height to tile width
-    int input_height_padding = TILE_WIDTH - (input_2d_matrix.size() % TILE_WIDTH);
+    int input_height_padding = (TILE_WIDTH - (input_2d_matrix.size() % TILE_WIDTH)) % TILE_WIDTH;
     vector<int> input_height_padding_vec;
     input_height_padding_vec.resize(input_2d_matrix[0].size());
     for(int i=0; i<input_height_padding; ++i)
