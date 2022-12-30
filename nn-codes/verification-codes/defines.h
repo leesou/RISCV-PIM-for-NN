@@ -11,8 +11,8 @@
 #define INPUT_PRECISION 4 // bit
 #define WEIGHT_PRECISION 8 // bit
 
-#define ONE_TILE_MATMUL
-//#define FULL_MATMUL
+//#define ONE_TILE_MATMUL
+#define FULL_MATMUL
 
 #define RAM_FILE_NAME "tb_ram.hex"
 #define INPUT_TENSOR_FILE_NAME "input_tensor.txt"
@@ -40,8 +40,24 @@
 
     #define ROOT_DIR "../../test_data/one_tile_matmul/"
 
-#elif defined(FULL_MATMUL)
+#elif defined(FULL_MATMUL) // for matmul test
 
+    #define INPUT_CHANNEL 32
+    #define INPUT_HEIGHT 14
+    #define INPUT_WIDTH 14
+
+    #define OUTPUT_CHANNEL 16
+    #define KERNEL_HEIGHT 3
+    #define KERNEL_WIDTH 3
+
+    #define PADDING 1
+    #define STRIDE_HEIGHT 1
+    #define STRIDE_WIDTH 1
+
+    #define WEIGHT_MATRIX_ADDR 0
+    #define INPUT_MATRIX_ADDR 6144 // index by byte
+
+    #define ROOT_DIR "../../test_data/matmul/"
 
 #endif
 
