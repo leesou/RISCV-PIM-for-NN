@@ -277,7 +277,14 @@ begin
     begin
         for(i=1; i<=RAM_DEPTH; i+=1) 
         begin
-            $fwrite(out_file, "%h ", mem[i-1]);
+            if(`TEST_TYPE==0)
+            begin
+                $fwrite(out_file, "%h ", mem[i-1]);
+            end
+            else
+            begin
+                $fwrite(out_file, "%5d", mem[i-1]);
+            end
             if(i%128==0) 
             begin
                 $fwrite(out_file, "\n");

@@ -302,8 +302,28 @@ initial begin
         $monitor("reg1[11]=%8h, reg1[8]=%8h, reg1[9]=%8h", REG1[11], REG1[8], REG1[9]);
     end
     if (`TEST_TYPE == 1) begin
+        REG1[10] = 0; REG2[10] = 0; // base addr for weight matrix
+        REG1[11] = 1024; REG2[11] = 1024; // base addr for input matrix
+        REG1[12] = 32768; REG2[12] = 32768; // base addr for output matrix
+        REG1[13] = 8; REG2[13] = 8; // weight matrix's height
+        REG1[14] = 128; REG2[14] = 128; // weight matrix's width
+        REG1[15] = 128; REG2[15] = 128; // input matrix's height
+        REG1[16] = 16; REG2[16] = 16; // input matrix's width
         $monitor("reg1[17]=%8d, reg1[18]=%8d, reg1[21]=%8h, reg1[24]=%8h, reg1[26]=%8d, reg1[27]=%8d",
                 REG1[17], REG1[18], REG1[21], REG1[24], REG1[26], REG1[27]);
+    end
+    if (`TEST_TYPE == 2) begin
+        REG1[10] = 0; REG2[10] = 0; // base addr for weight matrix
+        REG1[11] = 6144; REG2[11] = 6144; // base addr for input matrix
+        REG1[12] = 43776; REG2[12] = 43776; // base addr for output matrix
+        REG1[13] = 16; REG2[13] = 16; // weight matrix's height
+        REG1[14] = 384; REG2[14] = 384; // weight matrix's width
+        REG1[15] = 384; REG2[15] = 384; // input matrix's height
+        REG1[16] = 196; REG2[16] = 196; // input matrix's width
+        // $monitor("reg1[10]=%8d, reg1[11]=%8d, reg1[12]=%8d, reg1[13]=%8d, reg1[14]=%8d, reg1[15]=%8d, reg1[16]=%8d",
+        //         REG1[10], REG1[11], REG1[12], REG1[13], REG1[14], REG1[15], REG1[16]);
+        $monitor("reg1[5]=%8d, reg1[6]=%8d, reg1[17]=%8d, reg1[18]=%8d, reg1[31]=%8d, reg1[25]=%8d, reg1[26]=%8d, reg1[27]=%8d",
+                REG1[5], REG1[6], REG1[17], REG1[18], REG1[31], REG1[25], REG1[26], REG1[27]);
     end
 end
 

@@ -28,6 +28,10 @@ initial begin
         $readmemh("tb/one_tile_matmul/tb_ram.hex",mem_core);
         out_file = $fopen("./ram.output", "w");
     end
+    if (`TEST_TYPE == 2) begin
+        $readmemh("tb/matmul/tb_ram.hex",mem_core);
+        out_file = $fopen("./ram.output", "w");
+    end
 
     for(i=0; i<=13; i=i+1) begin
         $display("%h", mem_core[i]);
@@ -37,7 +41,7 @@ end
 
 always @ (posedge CLK) 
 begin
-    if(DEBUG && `TEST_TYPE>=1) 
+    if(DEBUG && (`TEST_TYPE>=1)) 
     begin
         // for(i=1; i<=LEN; i+=1) 
         // begin
@@ -90,6 +94,9 @@ initial begin
     end
     if (`TEST_TYPE == 1) begin
         $readmemh("tb/one_tile_matmul/one_tile_matmul.hex", mem_core);
+    end
+    if (`TEST_TYPE == 2) begin
+        $readmemh("tb/matmul/matmul.hex", mem_core);
     end
 
     for(i=0; i<=13; i=i+1) begin
