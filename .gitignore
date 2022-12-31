@@ -6,6 +6,7 @@ nn-codes/c-code/*
 *.asm
 *nn-codes/verification-codes/software_simulation
 *nn-codes/verification-codes/data_generation
+*nn-codes/verification-codes/result_comparison
 
 results
 
